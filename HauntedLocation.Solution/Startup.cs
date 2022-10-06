@@ -3,11 +3,17 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Serialization;
+using Microsoft.OpenApi.Models;
+using HauntedLocation.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace HauntedLocation.Solution
 {
@@ -23,10 +29,20 @@ namespace HauntedLocation.Solution
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<HauntedLocationContext>(opt =>
+                opt.UseMySql(Configuration["ConnectionStrings:DefaultConnection"], ServerVersion.AutoDetect(Configuration["ConnectionStrings:DefaultConnection"])));
+            services.AddControllers();
+
+            services.AddControllers();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "HauntedLocation.Solution", Version = "v1" });
+            });
+
             //Enable CORS
             services.AddCors(c =>
             {
-                c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+                c.AddPolicy("AllCors", options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             });
 
             //JSON Serializer
@@ -36,17 +52,27 @@ namespace HauntedLocation.Solution
                 = new DefaultContractResolver());
 
             services.AddRazorPages();
+
+            //services.AddControllers();
+
+            //services.AddEndpointsApiExplorer();
+            //services.AddSwaggerGen();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             //Enable CORS
-            app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            app.UseCors("AllCors");
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(options =>
+                {
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "HauntedLocation.Solution v1");
+                });   
             }
             else
             {
@@ -61,7 +87,7 @@ namespace HauntedLocation.Solution
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRazorPages();
+                endpoints.MapControllers();
             });
         }
     }

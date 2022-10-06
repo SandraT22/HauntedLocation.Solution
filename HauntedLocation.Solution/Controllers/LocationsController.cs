@@ -7,12 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HauntedLocation.Models;
 
-namespace HauntedLocation.Controllers
+namespace HauntedLocation.Controllers.v1
 {
- 
-        [ApiController]
-        [Route("[controller]")]
-        public class LocationsController : ControllerBase
+
+    [Route("api/v1/[controller]")]
+    [ApiController]
+    public class LocationsController : ControllerBase
         {
             private readonly HauntedLocationContext _db;
 
@@ -21,8 +21,20 @@ namespace HauntedLocation.Controllers
                 _db = db;
             }
 
-            //GET api/destinations
-            [HttpGet]
+        [HttpGet("Version")]
+        public IActionResult GetVersion()
+        {
+            return new OkObjectResult("v1 controller");
+        }
+
+        [HttpGet("All")]
+        public async Task<ActionResult<IEnumerable<Location>>> Get()
+        {
+            return await _db.Locations.ToListAsync();
+        }
+
+        //GET api/destinations
+        [HttpGet("Query")]
             public async Task<List<Location>> Get(string name, string keyword, string city, string address, string description, string link)
             {
                 IQueryable<Location> query = _db.Locations.AsQueryable();
