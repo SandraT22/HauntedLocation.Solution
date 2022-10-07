@@ -3,7 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.32901.82
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HauntedLocation", "HauntedLocation.Solution\HauntedLocation.csproj", "{D0FE4AB1-10DC-47F5-B080-C6DFE66A0D6E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HauntedLocation", "HauntedLocation.Solution\HauntedLocation.csproj", "{D0FE4AB1-10DC-47F5-B080-C6DFE66A0D6E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A6F66D16-83AF-4B30-8C31-08F69B934044}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
